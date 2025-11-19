@@ -10,8 +10,8 @@ import {
   updateDoc,
   where,
 } from 'firebase/firestore'
-import { db } from '../../lib/firebase'
-import type { Application, ApplicationInput, Link, ApplicationStatus, JobType } from '../../types/application'
+import { db } from '@/lib/firebase'
+import type { Application, ApplicationInput, Link, ApplicationStatus, JobType } from '@/types/application'
 
 const COLLECTION_NAME = 'applications'
 

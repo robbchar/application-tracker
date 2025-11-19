@@ -15,6 +15,9 @@ dist-ssr
 # Yarn Berry state
 .yarn/install-state.gz
 
+# Local Firebase config (keep real values out of git)
+firebase.config.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
