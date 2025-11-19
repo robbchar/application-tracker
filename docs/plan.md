@@ -89,21 +89,21 @@ Build a small web app that lets a job seeker **track their job applications** in
 ### Phased implementation plan (bulleted)
 
 **Phase 1 – Base setup & documentation**
-- [ ] Initialize this directory as a Git repository (`git init`) with an initial commit.
-- [ ] Create `docs/plan.md` and copy this plan into it (in bullet form).
-- [ ] Bootstrap Vite + React + TypeScript app using Yarn.
-- [ ] Install Tailwind, Oxlint, Prettier, Husky, and basic scripts (`lint`, `format`, `typecheck`, `dev`, `build`).
-- [ ] Configure TypeScript strict options and basic path aliases.
-- [ ] Write/update `README.md` to describe the project, tech stack, and development commands.
-- [ ] Expand `docs/thoughts.md` into a more structured design note (problem statement, data model, and roadmap).
+- [x] Initialize this directory as a Git repository (`git init`) with an initial commit.
+- [x] Create `docs/plan.md` and copy this plan into it (in bullet form).
+- [x] Bootstrap Vite + React + TypeScript app using Yarn.
+- [x] Install Tailwind, Oxlint, Prettier, Husky, and basic scripts (`lint`, `format`, `typecheck`, `dev`, `build`).
+- [x] Configure TypeScript strict options and basic path aliases.
+- [x] Write/update `README.md` to describe the project, tech stack, and development commands.
+- [x] Expand `docs/thoughts.md` into a more structured design note (problem statement, data model, and roadmap).
 
 **Phase 2 – Firebase integration (auth + data layer)**
-- [ ] Add Firebase SDK and create `lib/firebase.ts` with environment-driven config.
-- [ ] Set up Firebase Auth (email/password + Google) in the app:
-  - [ ] Implement an `AuthProvider` using React context + hooks (typed) wrapping `onAuthStateChanged`.
-  - [ ] Expose hooks like `useAuth()` that return the current user and loading/error states.
-- [ ] Set up Firestore client and **typed helpers** to read/write `Application` docs, including `links: Link[]`.
-- [ ] Draft conceptual Firestore security rules (to be applied in the Firebase console) based on `userId` ownership.
+- [x] Add Firebase SDK and create `lib/firebase.ts` with environment-driven config.
+- [x] Set up Firebase Auth (email/password + Google) in the app:
+  - [x] Implement an `AuthProvider` using React context + hooks (typed) wrapping `onAuthStateChanged`.
+  - [x] Expose hooks like `useAuth()` that return the current user and loading/error states.
+- [x] Set up Firestore client and **typed helpers** to read/write `Application` docs, including `links: Link[]`.
+- [x] Draft conceptual Firestore security rules (to be applied in the Firebase console) based on `userId` ownership.
 
 **Phase 3 – Core UX: auth page and applications list**
 - [ ] Implement combined **auth page** using Tailwind-styled components:
