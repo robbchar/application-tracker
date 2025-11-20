@@ -106,13 +106,13 @@ Build a small web app that lets a job seeker **track their job applications** in
 - [x] Draft conceptual Firestore security rules (to be applied in the Firebase console) based on `userId` ownership.
 
 **Phase 3 – Core UX: auth page and applications list**
-- [ ] Implement combined **auth page** using Tailwind-styled components:
-  - [ ] Email/password sign-in, create-account flow, and Google button.
-- [ ] Implement routing/conditional rendering in `App.tsx`:
-  - [ ] Show auth page when user is unauthenticated.
-  - [ ] Show `ApplicationsPage` when user is authenticated.
-- [ ] Implement `ApplicationsPage` layout with Tailwind, consuming `useAuth()` for the user and `useApplications()` hook for data.
-- [ ] Implement basic sorting (company, date, job type) on the client side initially (we can later move to Firestore queries if needed).
+- [x] Implement combined **auth page** using Tailwind-styled components:
+  - [x] Email/password sign-in, create-account flow, and Google button.
+- [x] Implement routing/conditional rendering in `App.tsx`:
+  - [x] Show auth page when user is unauthenticated.
+  - [x] Show `ApplicationsPage` when user is authenticated.
+- [x] Implement `ApplicationsPage` layout with Tailwind, consuming `useAuth()` for the user and `useApplications()` hook for data.
+- [x] Implement basic sorting (company, date, job type) on the client side initially (we can later move to Firestore queries if needed).
 
 **Phase 4 – Create/Edit/Delete and status flows**
 - [ ] Implement `ApplicationForm` component with strong TypeScript types and reusable input components.
@@ -133,6 +133,8 @@ Build a small web app that lets a job seeker **track their job applications** in
   - [ ] Applications list shows created applications, sorts correctly by company/date/job type.
   - [ ] Status updates reflect immediately in the UI.
   - [ ] Form validation behaves correctly from a user perspective.
+- [ ] Replace ESLint with Oxlint, configure it for React + TypeScript, and wire `lint` script.
+- [ ] Add Prettier config and scripts, and set up Husky to run lint/format on commit.
 - [ ] Run linters/typechecks and fix issues.
 - [ ] Configure Firebase Hosting for this app as an **additional site** in your existing project (build command and output directory setup).
 - [ ] Deploy v1 and verify the full flow with a couple of test accounts.
