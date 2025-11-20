@@ -8,6 +8,40 @@ import { auth, googleAuthProvider } from '@/lib/firebase'
 
 type Mode = 'signin' | 'signup'
 
+const getFriendlyAuthMessage = (error: unknown, mode: Mode): string => {
+  if (typeof error === 'object' && error && 'code' in error) {
+    const code = String((error as { code: unknown }).code)
+
+    switch (code) {
+      case 'auth/invalid-email':
+        return 'That email address looks invalid. Please check and try again.'
+      case 'auth/user-disabled':
+        return 'This account has been disabled. Please contact support if you think this is a mistake.'
+      case 'auth/user-not-found':
+      case 'auth/wrong-password':
+        return 'Incorrect email or password. Please try again.'
+      case 'auth/email-already-in-use':
+        return 'An account with this email already exists. Try signing in instead.'
+      case 'auth/weak-password':
+        return 'Please choose a stronger password (at least 6 characters).'
+      case 'auth/popup-closed-by-user':
+        return 'The sign-in popup was closed before completing. Please try again.'
+      case 'auth/cancelled-popup-request':
+        return 'Another sign-in is already in progress. Please wait a moment and try again.'
+      case 'auth/operation-not-allowed':
+        return 'This sign-in method is not enabled for this app.'
+      default:
+        if (code.startsWith('auth/')) {
+          return 'Something went wrong while signing in. Please try again.'
+        }
+    }
+  }
+
+  return mode === 'signin'
+    ? 'Something went wrong while signing in. Please try again.'
+    : 'Something went wrong while creating your account. Please try again.'
+}
+
 export const AuthPage = () => {
   const [mode, setMode] = useState<Mode>('signin')
   const [email, setEmail] = useState('')
@@ -27,7 +61,7 @@ export const AuthPage = () => {
         await createUserWithEmailAndPassword(auth, email, password)
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong')
+      setError(getFriendlyAuthMessage(err, mode))
     } finally {
       setSubmitting(false)
     }
@@ -39,7 +73,7 @@ export const AuthPage = () => {
     try {
       await signInWithPopup(auth, googleAuthProvider)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Google sign-in failed')
+      setError(getFriendlyAuthMessage(err, 'signin'))
     } finally {
       setSubmitting(false)
     }

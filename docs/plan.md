@@ -115,17 +115,17 @@ Build a small web app that lets a job seeker **track their job applications** in
 - [x] Implement basic sorting (company, date, job type) on the client side initially (we can later move to Firestore queries if needed).
 
 **Phase 4 – Create/Edit/Delete and status flows**
-- [ ] Implement `ApplicationForm` component with strong TypeScript types and reusable input components.
-- [ ] Implement **create** flow:
-  - [ ] "Add application" button opens form.
-  - [ ] On submit, writes new doc with `userId = currentUser.uid` and closes form.
-- [ ] Implement **edit** flow:
-  - [ ] Row "Edit" action populates the same form.
-  - [ ] On submit, updates existing Firestore doc.
-- [ ] Implement **inline status change** flow:
-  - [ ] Quick status dropdown or segmented control on each row that updates `status` directly in Firestore.
-- [ ] Implement **delete** flow with confirmation (dialog or inline confirmation UI).
-- [ ] Add minimal error and loading states (spinners/messages) for a solid UX.
+- [x] Implement `ApplicationForm` component with strong TypeScript types and reusable input components.
+- [x] Implement **create** flow:
+  - [x] "Add application" button opens form.
+  - [x] On submit, writes new doc with `userId = currentUser.uid` and closes form.
+- [x] Implement **edit** flow:
+  - [x] Row "Edit" action populates the same form.
+  - [x] On submit, updates existing Firestore doc.
+- [x] Implement **inline status change** flow:
+  - [x] Quick status dropdown or segmented control on each row that updates `status` directly in Firestore.
+- [x] Implement **delete** flow with confirmation (dialog or inline confirmation UI).
+- [x] Add minimal error and loading states (spinners/messages) for a solid UX.
 
 **Phase 5 – Testing, polish, and deployment**
 - [ ] Add React Testing Library tests focusing on **what the user sees**:
