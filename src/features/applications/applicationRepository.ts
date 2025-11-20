@@ -13,7 +13,7 @@ import {
 import { db } from '@/lib/firebase'
 import type { Application, ApplicationInput, Link, ApplicationStatus, JobType } from '@/types/application'
 
-const COLLECTION_NAME = 'applications'
+const COLLECTION_NAME = 'application-tracker'
 
 type ApplicationDocument = {
   userId: string
