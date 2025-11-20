@@ -55,13 +55,9 @@ export const ApplicationsPage = () => {
       }
 
       const aValue =
-        sortKey === 'company'
-          ? a.company.toLowerCase()
-          : a.jobType.toString().toLowerCase()
+        sortKey === 'company' ? a.company.toLowerCase() : a.jobType.toString().toLowerCase()
       const bValue =
-        sortKey === 'company'
-          ? b.company.toLowerCase()
-          : b.jobType.toString().toLowerCase()
+        sortKey === 'company' ? b.company.toLowerCase() : b.jobType.toString().toLowerCase()
 
       if (aValue < bValue) return -1
       if (aValue > bValue) return 1
@@ -76,7 +72,7 @@ export const ApplicationsPage = () => {
 
   const hasData = !loading && !error && sortedApplications.length > 0
 
-   const openCreateForm = () => {
+  const openCreateForm = () => {
     setFormMode('create')
     setActiveApplication(null)
     setFormError(null)
@@ -102,10 +98,7 @@ export const ApplicationsPage = () => {
 
     try {
       const id = await createApplication(user.uid, input)
-      setApplications((current) => [
-        { ...input, id, userId: user.uid },
-        ...current,
-      ])
+      setApplications((current) => [{ ...input, id, userId: user.uid }, ...current])
       closeForm()
     } catch (err) {
       setFormError(err instanceof Error ? err.message : 'Failed to create application')
@@ -124,9 +117,7 @@ export const ApplicationsPage = () => {
       await updateApplication(activeApplication.id, input)
       setApplications((current) =>
         current.map((application) =>
-          application.id === activeApplication.id
-            ? { ...application, ...input }
-            : application,
+          application.id === activeApplication.id ? { ...application, ...input } : application,
         ),
       )
       closeForm()
@@ -202,7 +193,7 @@ export const ApplicationsPage = () => {
       {formMode && (
         <ApplicationForm
           mode={formMode}
-          initial={formMode === 'edit' ? activeApplication ?? undefined : undefined}
+          initial={formMode === 'edit' ? (activeApplication ?? undefined) : undefined}
           submitting={formSubmitting}
           error={formError}
           onSubmit={formMode === 'create' ? handleCreate : handleEdit}
@@ -225,9 +216,7 @@ export const ApplicationsPage = () => {
             </select>
           </label>
         </div>
-        <div>
-          {/* TODO: add filters in a later iteration */}
-        </div>
+        <div>{/* TODO: add filters in a later iteration */}</div>
       </div>
 
       {loading && <p>Loading applications…</p>}
@@ -306,12 +295,17 @@ export const ApplicationsPage = () => {
 
       {pendingDelete && (
         <div className="modal-backdrop" role="presentation">
-          <div className="modal" role="dialog" aria-modal="true" aria-labelledby="modal-delete-title">
+          <div
+            className="modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-delete-title"
+          >
             <h2 id="modal-delete-title">Delete application</h2>
             <p>
               Are you sure you want to delete the application for{' '}
-              <strong>{pendingDelete.position}</strong> at{' '}
-              <strong>{pendingDelete.company}</strong>? This cannot be undone.
+              <strong>{pendingDelete.position}</strong> at <strong>{pendingDelete.company}</strong>?
+              This cannot be undone.
             </p>
             <div className="modal-actions">
               <button
@@ -337,5 +331,3 @@ export const ApplicationsPage = () => {
     </section>
   )
 }
-
-

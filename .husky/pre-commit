@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+# Ensure Yarn from nvm is on PATH when hooks run (Git hooks don't load your shell profile)
+export PATH="$HOME/.nvm/versions/node/v24.11.0/bin:$PATH"
+
+yarn lint
+yarn format

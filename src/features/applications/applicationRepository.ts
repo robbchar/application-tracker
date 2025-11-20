@@ -11,7 +11,13 @@ import {
   where,
 } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
-import type { Application, ApplicationInput, Link, ApplicationStatus, JobType } from '@/types/application'
+import type {
+  Application,
+  ApplicationInput,
+  Link,
+  ApplicationStatus,
+  JobType,
+} from '@/types/application'
 
 const COLLECTION_NAME = 'application-tracker'
 
@@ -109,5 +115,3 @@ export const deleteApplication = async (id: string): Promise<void> => {
   const docRef = doc(db, COLLECTION_NAME, id)
   await deleteDoc(docRef)
 }
-
-

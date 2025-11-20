@@ -33,5 +33,3 @@ export const getFirebaseApp = (): FirebaseApp => {
 export const auth = getAuth(getFirebaseApp())
 export const googleAuthProvider = new GoogleAuthProvider()
 export const db = getFirestore(getFirebaseApp())
-
-

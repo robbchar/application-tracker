@@ -23,21 +23,22 @@ Build a small web app that lets a job seeker **track their job applications** in
   - Store minimal user profile in app state (UID, display name, email), no custom backend.
 
 **Firestore data model**
-  - Collection: `applications`
-  - Document fields (per your notes):
-    - `userId: string` – Firebase `uid` of the owner
-    - `position: string`
-    - `company: string`
-    - `appliedDate: Timestamp`
-    - `location: string`
-    - `jobType: "hybrid" | "onsite" | "remote"`
-    - `status: "interested" | "applied" | "interview" | "offer" | "rejected" | "archived"` (we can tweak this together)
-    - `notes: string`
-    - `links: Link[]`
-  - Type definition for links:
-    - `type Link = { title?: string; url: string }`
-    - UI can offer a **dropdown of common link types** (e.g. "Application", "Cover letter", "Job description", "Other"), and when "Other" is chosen, allow a custom `title` string.
-  - All Firestore queries are **scoped by `userId`** so each user only sees their own docs.
+
+- Collection: `applications`
+- Document fields (per your notes):
+  - `userId: string` – Firebase `uid` of the owner
+  - `position: string`
+  - `company: string`
+  - `appliedDate: Timestamp`
+  - `location: string`
+  - `jobType: "hybrid" | "onsite" | "remote"`
+  - `status: "interested" | "applied" | "interview" | "offer" | "rejected" | "archived"` (we can tweak this together)
+  - `notes: string`
+  - `links: Link[]`
+- Type definition for links:
+  - `type Link = { title?: string; url: string }`
+  - UI can offer a **dropdown of common link types** (e.g. "Application", "Cover letter", "Job description", "Other"), and when "Other" is chosen, allow a custom `title` string.
+- All Firestore queries are **scoped by `userId`** so each user only sees their own docs.
 
 - **Security rules (conceptual)**
   - Allow read/write to `applications` **only if** `request.auth != null` and `resource.data.userId == request.auth.uid`.
@@ -89,6 +90,7 @@ Build a small web app that lets a job seeker **track their job applications** in
 ### Phased implementation plan (bulleted)
 
 **Phase 1 – Base setup & documentation**
+
 - [x] Initialize this directory as a Git repository (`git init`) with an initial commit.
 - [x] Create `docs/plan.md` and copy this plan into it (in bullet form).
 - [x] Bootstrap Vite + React + TypeScript app using Yarn.
@@ -98,6 +100,7 @@ Build a small web app that lets a job seeker **track their job applications** in
 - [x] Expand `docs/thoughts.md` into a more structured design note (problem statement, data model, and roadmap).
 
 **Phase 2 – Firebase integration (auth + data layer)**
+
 - [x] Add Firebase SDK and create `lib/firebase.ts` with environment-driven config.
 - [x] Set up Firebase Auth (email/password + Google) in the app:
   - [x] Implement an `AuthProvider` using React context + hooks (typed) wrapping `onAuthStateChanged`.
@@ -106,6 +109,7 @@ Build a small web app that lets a job seeker **track their job applications** in
 - [x] Draft conceptual Firestore security rules (to be applied in the Firebase console) based on `userId` ownership.
 
 **Phase 3 – Core UX: auth page and applications list**
+
 - [x] Implement combined **auth page** using Tailwind-styled components:
   - [x] Email/password sign-in, create-account flow, and Google button.
 - [x] Implement routing/conditional rendering in `App.tsx`:
@@ -115,6 +119,7 @@ Build a small web app that lets a job seeker **track their job applications** in
 - [x] Implement basic sorting (company, date, job type) on the client side initially (we can later move to Firestore queries if needed).
 
 **Phase 4 – Create/Edit/Delete and status flows**
+
 - [x] Implement `ApplicationForm` component with strong TypeScript types and reusable input components.
 - [x] Implement **create** flow:
   - [x] "Add application" button opens form.
@@ -128,6 +133,7 @@ Build a small web app that lets a job seeker **track their job applications** in
 - [x] Add minimal error and loading states (spinners/messages) for a solid UX.
 
 **Phase 5 – Testing, polish, and deployment**
+
 - [ ] Add React Testing Library tests focusing on **what the user sees**:
   - [ ] Auth page renders expected controls and flows.
   - [ ] Applications list shows created applications, sorts correctly by company/date/job type.
@@ -138,5 +144,3 @@ Build a small web app that lets a job seeker **track their job applications** in
 - [ ] Run linters/typechecks and fix issues.
 - [ ] Configure Firebase Hosting for this app as an **additional site** in your existing project (build command and output directory setup).
 - [ ] Deploy v1 and verify the full flow with a couple of test accounts.
-
-

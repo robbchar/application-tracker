@@ -1,5 +1,11 @@
 import { type FormEvent, useMemo, useState } from 'react'
-import type { Application, ApplicationInput, ApplicationStatus, JobType, Link } from '@/types/application'
+import type {
+  Application,
+  ApplicationInput,
+  ApplicationStatus,
+  JobType,
+  Link,
+} from '@/types/application'
 
 type Mode = 'create' | 'edit'
 
@@ -46,13 +52,12 @@ export const ApplicationForm = ({
   )
   const [location, setLocation] = useState(initial?.location ?? '')
   const [jobType, setJobType] = useState<JobType>(initial?.jobType ?? 'onsite')
-  const [status, setStatus] = useState<ApplicationStatus>(
-    initial?.status ?? 'interested',
-  )
+  const [status, setStatus] = useState<ApplicationStatus>(initial?.status ?? 'interested')
   const [notes, setNotes] = useState(initial?.notes ?? '')
   const [links, setLinks] = useState<LinkDraft[]>(
-    (initial?.links ?? []).map((link) => ({ ...link, id: crypto.randomUUID() })) ||
-      [createEmptyLink()],
+    (initial?.links ?? []).map((link) => ({ ...link, id: crypto.randomUUID() })) || [
+      createEmptyLink(),
+    ],
   )
 
   const title = mode === 'create' ? 'Add application' : 'Edit application'
@@ -107,7 +112,9 @@ export const ApplicationForm = ({
   }
 
   const removeLinkRow = (id: string) => {
-    setLinks((current) => (current.length <= 1 ? current : current.filter((link) => link.id !== id)))
+    setLinks((current) =>
+      current.length <= 1 ? current : current.filter((link) => link.id !== id),
+    )
   }
 
   return (
@@ -197,11 +204,7 @@ export const ApplicationForm = ({
         <div className="field">
           <div className="applications-links-header">
             <span>Links</span>
-            <button
-              type="button"
-              className="btn-secondary btn-small"
-              onClick={addLinkRow}
-            >
+            <button type="button" className="btn-secondary btn-small" onClick={addLinkRow}>
               Add link
             </button>
           </div>
@@ -236,12 +239,7 @@ export const ApplicationForm = ({
         {error && <p className="auth-error">{error}</p>}
 
         <div className="applications-form-actions">
-          <button
-            type="button"
-            className="btn-secondary"
-            onClick={onCancel}
-            disabled={submitting}
-          >
+          <button type="button" className="btn-secondary" onClick={onCancel} disabled={submitting}>
             Cancel
           </button>
           <button type="submit" className="btn-primary" disabled={submitting}>
@@ -252,5 +250,3 @@ export const ApplicationForm = ({
     </section>
   )
 }
-
-

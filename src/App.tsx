@@ -9,32 +9,20 @@ const AppRoutes = () => {
   const location = useLocation()
 
   if (loading) {
-    return (
-      <p>Loading...</p>
-    )
+    return <p>Loading...</p>
   }
 
   return (
     <main className="app-shell">
       <Routes>
-        <Route
-          path="/auth"
-          element={user ? <Navigate to="/" replace /> : <AuthPage />}
-        />
+        <Route path="/auth" element={user ? <Navigate to="/" replace /> : <AuthPage />} />
         <Route
           path="/"
           element={
-            user ? (
-              <ApplicationsPage />
-            ) : (
-              <Navigate to="/auth" replace state={{ from: location }} />
-            )
+            user ? <ApplicationsPage /> : <Navigate to="/auth" replace state={{ from: location }} />
           }
         />
-        <Route
-          path="*"
-          element={<Navigate to={user ? '/' : '/auth'} replace />}
-        />
+        <Route path="*" element={<Navigate to={user ? '/' : '/auth'} replace />} />
       </Routes>
     </main>
   )

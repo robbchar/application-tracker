@@ -8,5 +8,3 @@ export type AuthState = {
 }
 
 export const AuthContext = createContext<AuthState | undefined>(undefined)
-
-

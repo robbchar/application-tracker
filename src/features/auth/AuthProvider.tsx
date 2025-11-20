@@ -30,5 +30,3 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   return <AuthContext.Provider value={state}>{children}</AuthContext.Provider>
 }
-
-

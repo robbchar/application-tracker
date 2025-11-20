@@ -8,4 +8,3 @@ export const useAuth = (): AuthState => {
   }
   return ctx
 }
-

@@ -36,5 +36,3 @@ export interface ApplicationInput {
   notes: string
   links: Link[]
 }
-
-
