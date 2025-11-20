@@ -26,6 +26,7 @@ export const ApplicationsPage = () => {
   const [formSubmitting, setFormSubmitting] = useState(false)
   const [statusUpdatingId, setStatusUpdatingId] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [pendingDelete, setPendingDelete] = useState<Application | null>(null)
 
   useEffect(() => {
     if (!user) return
@@ -152,19 +153,29 @@ export const ApplicationsPage = () => {
     }
   }
 
-  const handleDelete = async (id: string) => {
-    const confirmed = window.confirm('Delete this application? This cannot be undone.')
-    if (!confirmed) return
+  const requestDelete = (application: Application) => {
+    setPendingDelete(application)
+  }
 
+  const confirmDelete = async () => {
+    if (!pendingDelete) return
+
+    const id = pendingDelete.id
     setDeletingId(id)
     try {
       await deleteApplication(id)
       setApplications((current) => current.filter((application) => application.id !== id))
+      setPendingDelete(null)
     } catch {
       // TODO: surface delete failure to the user
     } finally {
       setDeletingId(null)
     }
+  }
+
+  const cancelDelete = () => {
+    if (deletingId) return
+    setPendingDelete(null)
   }
 
   return (
@@ -277,7 +288,7 @@ export const ApplicationsPage = () => {
                     <button
                       type="button"
                       className="btn-secondary btn-small"
-                      onClick={() => handleDelete(application.id)}
+                      onClick={() => requestDelete(application)}
                       disabled={
                         deletingId === application.id ||
                         (formMode === 'edit' && activeApplication?.id === application.id)
@@ -291,6 +302,37 @@ export const ApplicationsPage = () => {
             ))}
           </tbody>
         </table>
+      )}
+
+      {pendingDelete && (
+        <div className="modal-backdrop" role="presentation">
+          <div className="modal" role="dialog" aria-modal="true" aria-labelledby="modal-delete-title">
+            <h2 id="modal-delete-title">Delete application</h2>
+            <p>
+              Are you sure you want to delete the application for{' '}
+              <strong>{pendingDelete.position}</strong> at{' '}
+              <strong>{pendingDelete.company}</strong>? This cannot be undone.
+            </p>
+            <div className="modal-actions">
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={cancelDelete}
+                disabled={deletingId === pendingDelete.id}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={confirmDelete}
+                disabled={deletingId === pendingDelete.id}
+              >
+                {deletingId === pendingDelete.id ? 'Deleting…' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </section>
   )
