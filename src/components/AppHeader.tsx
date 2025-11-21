@@ -48,7 +48,7 @@ export const AppHeader = ({ title }: AppHeaderProps) => {
             isActiveRoute(item.to) ? (
               <span
                 key={item.to}
-                className="btn-secondary app-nav-link app-nav-link-active"
+                className="app-nav-link-active btn-secondary app-nav-link "
                 aria-current="page"
               >
                 {item.label}
