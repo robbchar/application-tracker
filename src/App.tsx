@@ -2,6 +2,7 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '@/features/auth/useAuth'
 import { AuthPage } from '@/features/auth/AuthPage'
 import { ApplicationsPage } from '@/features/applications/ApplicationsPage'
+import { ImportApplicationsPage } from '@/features/applications/ImportApplicationsPage'
 import './App.css'
 
 const AppRoutes = () => {
@@ -20,6 +21,16 @@ const AppRoutes = () => {
           path="/"
           element={
             user ? <ApplicationsPage /> : <Navigate to="/auth" replace state={{ from: location }} />
+          }
+        />
+        <Route
+          path="/import"
+          element={
+            user ? (
+              <ImportApplicationsPage />
+            ) : (
+              <Navigate to="/auth" replace state={{ from: location }} />
+            )
           }
         />
         <Route path="*" element={<Navigate to={user ? '/' : '/auth'} replace />} />
