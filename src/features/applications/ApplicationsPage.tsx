@@ -1,6 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import { signOut } from 'firebase/auth'
-import { Link } from 'react-router-dom'
 import { useAuth } from '@/features/auth/useAuth'
 import {
   createApplication,
@@ -10,8 +8,8 @@ import {
   updateApplicationStatus,
 } from '@/features/applications/applicationRepository'
 import type { Application, ApplicationInput, ApplicationStatus } from '@/types/application'
-import { auth } from '@/lib/firebase'
 import { ApplicationForm } from '@/features/applications/ApplicationForm'
+import { AppHeader } from '@/components/AppHeader'
 
 type SortKey = 'appliedDate' | 'company' | 'jobType'
 
@@ -66,10 +64,6 @@ export const ApplicationsPage = () => {
     })
     return copy
   }, [applications, sortKey])
-
-  const handleSignOut = async () => {
-    await signOut(auth)
-  }
 
   const hasData = !loading && !error && sortedApplications.length > 0
 
@@ -172,27 +166,7 @@ export const ApplicationsPage = () => {
 
   return (
     <section className="applications-card">
-      <header className="app-header">
-        <div>
-          <h1>Applications</h1>
-          {user && (
-            <p className="app-subtitle">
-              Signed in as <strong>{user.email ?? user.uid}</strong>
-            </p>
-          )}
-        </div>
-        <div className="app-header-actions">
-          <Link className="btn-secondary" to="/import">
-            Import
-          </Link>
-          <button className="btn-secondary" type="button" onClick={handleSignOut}>
-            Sign out
-          </button>
-          <button className="btn-primary" type="button" onClick={openCreateForm}>
-            Add application
-          </button>
-        </div>
-      </header>
+      <AppHeader title="Applications" />
 
       {formMode && (
         <ApplicationForm
@@ -220,7 +194,11 @@ export const ApplicationsPage = () => {
             </select>
           </label>
         </div>
-        <div>{/* TODO: add filters in a later iteration */}</div>
+        <div className="applications-controls-actions">
+          <button className="btn-primary" type="button" onClick={openCreateForm}>
+            Add application
+          </button>
+        </div>
       </div>
 
       {loading && <p>Loading applications…</p>}

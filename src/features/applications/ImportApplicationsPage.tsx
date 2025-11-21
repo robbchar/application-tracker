@@ -1,10 +1,8 @@
 import { useState } from 'react'
-import { signOut } from 'firebase/auth'
-import { Link } from 'react-router-dom'
 import { useAuth } from '@/features/auth/useAuth'
 import { createApplicationsBulk } from '@/features/applications/applicationRepository'
 import { parseApplicationsFromLog } from '@/features/applications/importApplications'
-import { auth } from '@/lib/firebase'
+import { AppHeader } from '@/components/AppHeader'
 
 export const ImportApplicationsPage = () => {
   const { user } = useAuth()
@@ -20,10 +18,6 @@ export const ImportApplicationsPage = () => {
   const [importSubmitting, setImportSubmitting] = useState(false)
   const [importError, setImportError] = useState<string | null>(null)
   const [importSuccessCount, setImportSuccessCount] = useState<number | null>(null)
-
-  const handleSignOut = async () => {
-    await signOut(auth)
-  }
 
   const handlePreviewImport = () => {
     setImportError(null)
@@ -58,24 +52,7 @@ export const ImportApplicationsPage = () => {
 
   return (
     <section className="applications-card">
-      <header className="app-header">
-        <div>
-          <h1>Import applications</h1>
-          {user && (
-            <p className="app-subtitle">
-              Signed in as <strong>{user.email ?? user.uid}</strong>
-            </p>
-          )}
-        </div>
-        <div className="app-header-actions">
-          <Link className="btn-secondary" to="/">
-            Home
-          </Link>
-          <button className="btn-secondary" type="button" onClick={handleSignOut}>
-            Sign out
-          </button>
-        </div>
-      </header>
+      <AppHeader title="Import applications" />
 
       <section className="applications-form" aria-label="Import applications">
         <div className="applications-form-body">

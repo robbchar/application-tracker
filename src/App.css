@@ -32,6 +32,24 @@
   align-items: center;
 }
 
+.app-nav {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.app-nav-link {
+  text-decoration: none;
+}
+
+.app-nav-link.app-nav-link-active {
+  background-color: ##e4d6fb;
+  border-color: #cbd5e1;
+  color: #0f172a;
+  cursor: default;
+  pointer-events: none;
+}
+
 .auth-card {
   border-radius: 0.75rem;
   border: 1px solid #e2e8f0;
@@ -162,6 +180,11 @@
   align-items: center;
   margin-bottom: 1rem;
   gap: 1rem;
+}
+
+.applications-controls-actions {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .applications-controls select {
