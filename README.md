@@ -2,6 +2,38 @@
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
+## Firebase Hosting
+
+This project is configured to deploy a single Vite SPA to Firebase Hosting.
+
+### Local deploy
+
+1. Install Firebase CLI (latest):
+
+```bash
+yarn global add firebase-tools
+```
+
+2. Authenticate and select the project:
+
+```bash
+firebase login
+firebase use robbchar-3db11
+```
+
+3. Build and deploy Hosting:
+
+```bash
+yarn build
+firebase deploy --only hosting
+```
+
+### CI deploy
+
+GitHub Actions in `.github/workflows/firebase-hosting.yml` builds on every `push` to `main` and deploys to the live channel. Pull requests to `main` deploy a preview channel.
+
+To enable CI deploys, add the service account JSON to the repository secret `FIREBASE_SERVICE_ACCOUNT`.
+
 Currently, two official plugins are available:
 
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
