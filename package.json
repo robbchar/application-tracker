@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "format": "prettier --write .",
     "test": "vitest",
-    "prepare": "husky"
+    "test:ci": "vitest run",
+    "prepare": "husky install"
   },
   "dependencies": {
     "firebase": "^12.6.0",
