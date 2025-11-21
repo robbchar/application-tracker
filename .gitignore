@@ -32,3 +32,6 @@ firebase.config.json
 *.njsproj
 *.sln
 *.sw?
+
+# test coverage files
+coverage/
