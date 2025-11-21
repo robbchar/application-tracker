@@ -1,0 +1,17 @@
+{
+  "projects": {
+    "default": "robbchar-3db11"
+  },
+  "targets": {
+    "robbchar-3db11": {
+      "hosting": {
+        "application-tracker": [
+          "application-tracker-site"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
+
+
