@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
 import { ApplicationsPage } from './ApplicationsPage'
 import type { AuthState } from '@/features/auth/AuthContext'
 import * as useAuthModule from '@/features/auth/useAuth'
@@ -19,7 +20,11 @@ describe('ApplicationsPage', () => {
       error: null,
     })
 
-    render(<ApplicationsPage />)
+    render(
+      <MemoryRouter>
+        <ApplicationsPage />
+      </MemoryRouter>,
+    )
 
     expect(await screen.findByText(/no applications yet/i)).toBeInTheDocument()
   })

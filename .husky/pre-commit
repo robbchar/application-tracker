@@ -4,4 +4,4 @@
 export PATH="$HOME/.nvm/versions/node/v24.11.0/bin:$PATH"
 
 yarn lint
-yarn format
+yarn lint-staged

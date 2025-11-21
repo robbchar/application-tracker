@@ -7,6 +7,7 @@ import {
   orderBy,
   query,
   Timestamp,
+  writeBatch,
   updateDoc,
   where,
 } from 'firebase/firestore'
@@ -80,6 +81,38 @@ export const createApplication = async (
 
   const docRef = await addDoc(applicationsCollection, docToCreate)
   return docRef.id
+}
+
+export const createApplicationsBulk = async (
+  userId: string,
+  inputs: ApplicationInput[],
+): Promise<string[]> => {
+  if (inputs.length === 0) return []
+
+  const batch = writeBatch(db)
+  const createdIds: string[] = []
+
+  for (const input of inputs) {
+    const docRef = doc(applicationsCollection)
+    createdIds.push(docRef.id)
+
+    const docToCreate: ApplicationDocument = {
+      userId,
+      position: input.position,
+      company: input.company,
+      appliedDate: Timestamp.fromDate(input.appliedDate),
+      location: input.location,
+      jobType: input.jobType,
+      status: input.status,
+      notes: input.notes,
+      links: input.links,
+    }
+
+    batch.set(docRef, docToCreate)
+  }
+
+  await batch.commit()
+  return createdIds
 }
 
 export const updateApplication = async (

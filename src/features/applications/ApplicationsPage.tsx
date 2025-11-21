@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { signOut } from 'firebase/auth'
+import { Link } from 'react-router-dom'
 import { useAuth } from '@/features/auth/useAuth'
 import {
   createApplication,
@@ -181,6 +182,9 @@ export const ApplicationsPage = () => {
           )}
         </div>
         <div className="app-header-actions">
+          <Link className="btn-secondary" to="/import">
+            Import
+          </Link>
           <button className="btn-secondary" type="button" onClick={handleSignOut}>
             Sign out
           </button>
