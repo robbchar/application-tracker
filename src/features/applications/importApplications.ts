@@ -228,7 +228,7 @@ export function inferStatus(lines: string[]): { status: ApplicationStatus; rawTe
 
   const rawText = bulletsAfterHeader[0] ?? allBullets[0]
   if (!rawText) {
-    return { status: 'interested' }
+    return { status: 'applied' }
   }
 
   const normalized = rawText.toLowerCase()
@@ -243,7 +243,7 @@ export function inferStatus(lines: string[]): { status: ApplicationStatus; rawTe
   }
   if (normalized.includes('applied')) return { status: 'applied', rawText }
 
-  return { status: 'interested', rawText }
+  return { status: 'applied', rawText }
 }
 
 export function inferJobType(titleOrNotesText: string): JobType {

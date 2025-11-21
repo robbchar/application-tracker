@@ -86,9 +86,9 @@ progress:
       expect(result.status).toBe('offer')
     })
 
-    it('defaults to interested when no bullets', () => {
+    it('defaults to applied when no bullets', () => {
       const result = inferStatus(['no status here'])
-      expect(result.status).toBe('interested')
+      expect(result.status).toBe('applied')
     })
   })
 
