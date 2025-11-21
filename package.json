@@ -12,6 +12,7 @@
     "lint-staged": "lint-staged",
     "test": "vitest",
     "test:ci": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "prepare": "husky install"
   },
   "dependencies": {
@@ -29,6 +30,7 @@
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "@vitejs/plugin-react": "^5.1.0",
+    "@vitest/coverage-v8": "4.0.10",
     "globals": "^16.5.0",
     "husky": "^9.1.6",
     "jsdom": "^27.2.0",
