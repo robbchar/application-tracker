@@ -107,7 +107,10 @@ export function parseBlock(blockText: string): ParsedApplication | ParseFailure 
     links,
   }
 
-  if (inferredStatus.rawText && !notes.toLowerCase().includes(inferredStatus.rawText.toLowerCase())) {
+  if (
+    inferredStatus.rawText &&
+    !notes.toLowerCase().includes(inferredStatus.rawText.toLowerCase())
+  ) {
     input.notes = notes ? `${notes}\n${inferredStatus.rawText}` : inferredStatus.rawText
   }
 
@@ -272,11 +275,7 @@ export function parseDateString(dateText: string): Date | null {
 
   const [month, day, year] = parts
   const date = new Date(year, month - 1, day)
-  if (
-    date.getFullYear() !== year ||
-    date.getMonth() !== month - 1 ||
-    date.getDate() !== day
-  ) {
+  if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
     return null
   }
 
@@ -286,5 +285,3 @@ export function parseDateString(dateText: string): Date | null {
 function isUrlLine(line: string): boolean {
   return httpUrlRegex.test(line)
 }
-
-

@@ -130,5 +130,3 @@ https://example.com/job/1`
     })
   })
 })
-
-
