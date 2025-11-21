@@ -19,6 +19,7 @@ export const ApplicationsPage = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [sortKey, setSortKey] = useState<SortKey>('appliedDate')
+  const [companySearchQuery, setCompanySearchQuery] = useState('')
   const [formMode, setFormMode] = useState<'create' | 'edit' | null>(null)
   const [activeApplication, setActiveApplication] = useState<Application | null>(null)
   const [formError, setFormError] = useState<string | null>(null)
@@ -46,8 +47,14 @@ export const ApplicationsPage = () => {
     void load()
   }, [user])
 
-  const sortedApplications = useMemo(() => {
-    const copy = [...applications]
+  const visibleApplications = useMemo(() => {
+    const normalizedQuery = companySearchQuery.trim().toLowerCase()
+    const filtered = normalizedQuery
+      ? applications.filter((application) =>
+          application.company.toLowerCase().includes(normalizedQuery),
+        )
+      : applications
+    const copy = [...filtered]
     copy.sort((a, b) => {
       if (sortKey === 'appliedDate') {
         return b.appliedDate.getTime() - a.appliedDate.getTime()
@@ -63,9 +70,10 @@ export const ApplicationsPage = () => {
       return 0
     })
     return copy
-  }, [applications, sortKey])
+  }, [applications, sortKey, companySearchQuery])
 
-  const hasData = !loading && !error && sortedApplications.length > 0
+  const hasData = !loading && !error && visibleApplications.length > 0
+  const hasAnyApplications = !loading && !error && applications.length > 0
 
   const openCreateForm = () => {
     setFormMode('create')
@@ -180,7 +188,7 @@ export const ApplicationsPage = () => {
       )}
 
       <div className="applications-controls">
-        <div>
+        <div className="applications-controls-main">
           <label className={!hasData ? 'field-disabled' : undefined}>
             Sort by{' '}
             <select
@@ -193,6 +201,16 @@ export const ApplicationsPage = () => {
               <option value="jobType">Job type</option>
             </select>
           </label>
+          <label className={!hasAnyApplications ? 'field-disabled' : undefined}>
+            Company{' '}
+            <input
+              type="search"
+              value={companySearchQuery}
+              onChange={(event) => setCompanySearchQuery(event.target.value)}
+              placeholder="Search company…"
+              disabled={!hasAnyApplications}
+            />
+          </label>
         </div>
         <div className="applications-controls-actions">
           <button className="btn-primary" type="button" onClick={openCreateForm}>
@@ -204,11 +222,15 @@ export const ApplicationsPage = () => {
       {loading && <p>Loading applications…</p>}
       {error && <p className="auth-error">{error}</p>}
 
-      {!loading && !error && sortedApplications.length === 0 && (
+      {!loading && !error && applications.length === 0 && (
         <p>No applications yet. Start by adding your first one.</p>
       )}
 
-      {!loading && !error && sortedApplications.length > 0 && (
+      {!loading && !error && applications.length > 0 && visibleApplications.length === 0 && (
+        <p>No applications match that company search.</p>
+      )}
+
+      {!loading && !error && visibleApplications.length > 0 && (
         <table className="applications-table">
           <thead>
             <tr>
@@ -221,7 +243,7 @@ export const ApplicationsPage = () => {
             </tr>
           </thead>
           <tbody>
-            {sortedApplications.map((application) => (
+            {visibleApplications.map((application) => (
               <tr key={application.id}>
                 <td>{application.company}</td>
                 <td>{application.position}</td>
