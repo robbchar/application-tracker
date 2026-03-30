@@ -2,6 +2,18 @@
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
+## 🛡️ Firebase Security & Config
+
+Firestore security rules for this project are **not** managed in this repository. They are maintained in the central config repo to ensure project-wide consistency:
+
+👉 [**firebase-internal-config**](../firebase-internal-config/README.md)
+
+### How to update/deploy rules:
+
+1. Navigate to the `firebase-internal-config` repository.
+2. Edit `firestore.rules` under the `/application-tracker` namespace.
+3. Run `firebase deploy --only firestore`.
+
 ## Firebase Hosting
 
 This project is configured to deploy a single Vite SPA to Firebase Hosting.

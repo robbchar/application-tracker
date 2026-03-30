@@ -5,13 +5,11 @@
   "targets": {
     "robbchar-3db11": {
       "hosting": {
-        "application-tracker": [
-          "application-tracker-site"
+        "show-tracker-site": [
+          "show-tracker-site"
         ]
       }
     }
   },
   "etags": {}
 }
-
-
