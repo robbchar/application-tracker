@@ -3,6 +3,7 @@ import { useAuth } from '@/features/auth/useAuth'
 import {
   createApplication,
   deleteApplication,
+  deleteAllApplicationsByUser,
   listApplicationsByUser,
   updateApplication,
   updateApplicationStatus,
@@ -172,6 +173,24 @@ export const ApplicationsPage = () => {
     setPendingDelete(null)
   }
 
+  const handleDeleteAll = async () => {
+    if (!user) return
+    const confirmed = window.confirm(
+      'Are you sure you want to delete ALL your applications? This cannot be undone.',
+    )
+    if (!confirmed) return
+
+    setLoading(true)
+    try {
+      await deleteAllApplicationsByUser(user.uid)
+      setApplications([])
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete applications')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <section className="applications-card">
       <AppHeader title="Applications" />
@@ -213,8 +232,21 @@ export const ApplicationsPage = () => {
           </label>
         </div>
         <div className="applications-controls-actions">
-          <button className="btn-primary" type="button" onClick={openCreateForm}>
+          <button
+            className="btn-primary"
+            type="button"
+            onClick={openCreateForm}
+            style={{ marginRight: '8px' }}
+          >
             Add application
+          </button>
+          <button
+            className="btn-danger"
+            type="button"
+            onClick={handleDeleteAll}
+            disabled={loading || applications.length === 0}
+          >
+            Delete all
           </button>
         </div>
       </div>

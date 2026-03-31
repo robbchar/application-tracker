@@ -148,3 +148,17 @@ export const deleteApplication = async (id: string): Promise<void> => {
   const docRef = doc(db, COLLECTION_NAME, id)
   await deleteDoc(docRef)
 }
+
+export const deleteAllApplicationsByUser = async (userId: string): Promise<void> => {
+  const q = query(applicationsCollection, where('userId', '==', userId))
+  const snapshot = await getDocs(q)
+
+  if (snapshot.empty) return
+
+  const batch = writeBatch(db)
+  snapshot.docs.forEach((docSnapshot) => {
+    batch.delete(docSnapshot.ref)
+  })
+
+  await batch.commit()
+}

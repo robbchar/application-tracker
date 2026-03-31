@@ -5,8 +5,8 @@
   "targets": {
     "robbchar-3db11": {
       "hosting": {
-        "show-tracker-site": [
-          "show-tracker-site"
+        "application-tracker": [
+          "application-tracker-site"
         ]
       }
     }
