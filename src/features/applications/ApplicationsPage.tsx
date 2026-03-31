@@ -12,14 +12,22 @@ import type { Application, ApplicationInput, ApplicationStatus } from '@/types/a
 import { ApplicationForm } from '@/features/applications/ApplicationForm'
 import { AppHeader } from '@/components/AppHeader'
 
-type SortKey = 'appliedDate' | 'company' | 'jobType'
+type SortKey = 'appliedDate' | 'company' | 'jobType' | 'position' | 'status'
+type SortDirection = 'asc' | 'desc'
+interface SortConfig {
+  key: SortKey | null
+  direction: SortDirection | null
+}
 
 export const ApplicationsPage = () => {
   const { user } = useAuth()
   const [applications, setApplications] = useState<Application[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [sortKey, setSortKey] = useState<SortKey>('appliedDate')
+  const [sortConfig, setSortConfig] = useState<SortConfig>({
+    key: 'appliedDate',
+    direction: 'desc',
+  })
   const [companySearchQuery, setCompanySearchQuery] = useState('')
   const [formMode, setFormMode] = useState<'create' | 'edit' | null>(null)
   const [activeApplication, setActiveApplication] = useState<Application | null>(null)
@@ -55,25 +63,27 @@ export const ApplicationsPage = () => {
           application.company.toLowerCase().includes(normalizedQuery),
         )
       : applications
+
+    if (!sortConfig.key || !sortConfig.direction) return filtered
+
     const copy = [...filtered]
     copy.sort((a, b) => {
-      if (sortKey === 'appliedDate') {
-        return b.appliedDate.getTime() - a.appliedDate.getTime()
-      }
+      let aValue: any = a[sortConfig.key!]
+      let bValue: any = b[sortConfig.key!]
 
-      const aValue =
-        sortKey === 'company' ? a.company.toLowerCase() : a.jobType.toString().toLowerCase()
-      const bValue =
-        sortKey === 'company' ? b.company.toLowerCase() : b.jobType.toString().toLowerCase()
+      if (aValue instanceof Date) aValue = (aValue as Date).getTime()
+      if (bValue instanceof Date) bValue = (bValue as Date).getTime()
 
-      if (aValue < bValue) return -1
-      if (aValue > bValue) return 1
+      if (typeof aValue === 'string') aValue = aValue.toLowerCase()
+      if (typeof bValue === 'string') bValue = bValue.toLowerCase()
+
+      if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1
+      if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1
       return 0
     })
     return copy
-  }, [applications, sortKey, companySearchQuery])
+  }, [applications, sortConfig, companySearchQuery])
 
-  const hasData = !loading && !error && visibleApplications.length > 0
   const hasAnyApplications = !loading && !error && applications.length > 0
 
   const openCreateForm = () => {
@@ -173,6 +183,23 @@ export const ApplicationsPage = () => {
     setPendingDelete(null)
   }
 
+  const handleSort = (key: SortKey) => {
+    setSortConfig((prev) => {
+      if (prev.key !== key) {
+        return { key, direction: 'asc' }
+      }
+      if (prev.direction === 'asc') {
+        return { key, direction: 'desc' }
+      }
+      return { key: null, direction: null }
+    })
+  }
+
+  const getSortIndicator = (key: SortKey) => {
+    if (sortConfig.key !== key) return '-'
+    return sortConfig.direction === 'asc' ? '↑' : '↓'
+  }
+
   const handleDeleteAll = async () => {
     if (!user) return
     const confirmed = window.confirm(
@@ -196,30 +223,22 @@ export const ApplicationsPage = () => {
       <AppHeader title="Applications" />
 
       {formMode && (
-        <ApplicationForm
-          mode={formMode}
-          initial={formMode === 'edit' ? (activeApplication ?? undefined) : undefined}
-          submitting={formSubmitting}
-          error={formError}
-          onSubmit={formMode === 'create' ? handleCreate : handleEdit}
-          onCancel={closeForm}
-        />
+        <div className="modal-backdrop" role="presentation">
+          <div className="modal" role="dialog" aria-modal="true">
+            <ApplicationForm
+              mode={formMode}
+              initial={formMode === 'edit' ? (activeApplication ?? undefined) : undefined}
+              submitting={formSubmitting}
+              error={formError}
+              onSubmit={formMode === 'create' ? handleCreate : handleEdit}
+              onCancel={closeForm}
+            />
+          </div>
+        </div>
       )}
 
       <div className="applications-controls">
         <div className="applications-controls-main">
-          <label className={!hasData ? 'field-disabled' : undefined}>
-            Sort by{' '}
-            <select
-              value={sortKey}
-              onChange={(event) => setSortKey(event.target.value as SortKey)}
-              disabled={!hasData}
-            >
-              <option value="appliedDate">Date</option>
-              <option value="company">Company</option>
-              <option value="jobType">Job type</option>
-            </select>
-          </label>
           <label className={!hasAnyApplications ? 'field-disabled' : undefined}>
             Company{' '}
             <input
@@ -266,11 +285,21 @@ export const ApplicationsPage = () => {
         <table className="applications-table">
           <thead>
             <tr>
-              <th>Company</th>
-              <th>Position</th>
-              <th>Date</th>
-              <th>Job type</th>
-              <th>Status</th>
+              <th onClick={() => handleSort('company')} className="sortable-header">
+                Company {getSortIndicator('company')}
+              </th>
+              <th onClick={() => handleSort('position')} className="sortable-header">
+                Position {getSortIndicator('position')}
+              </th>
+              <th onClick={() => handleSort('appliedDate')} className="sortable-header">
+                Date {getSortIndicator('appliedDate')}
+              </th>
+              <th onClick={() => handleSort('jobType')} className="sortable-header">
+                Job type {getSortIndicator('jobType')}
+              </th>
+              <th onClick={() => handleSort('status')} className="sortable-header">
+                Status {getSortIndicator('status')}
+              </th>
               <th />
             </tr>
           </thead>
@@ -278,7 +307,20 @@ export const ApplicationsPage = () => {
             {visibleApplications.map((application) => (
               <tr key={application.id}>
                 <td>{application.company}</td>
-                <td>{application.position}</td>
+                <td>
+                  {application.links && application.links.length > 0 ? (
+                    <a
+                      href={application.links[0].url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="job-link"
+                    >
+                      {application.position}
+                    </a>
+                  ) : (
+                    application.position
+                  )}
+                </td>
                 <td>{application.appliedDate.toLocaleDateString()}</td>
                 <td>{application.jobType}</td>
                 <td>
