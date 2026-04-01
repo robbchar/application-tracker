@@ -51,8 +51,8 @@ export const ApplicationForm = ({
     initial ? initial.appliedDate.toISOString().slice(0, 10) : '',
   )
   const [location, setLocation] = useState(initial?.location ?? '')
-  const [jobType, setJobType] = useState<JobType>(initial?.jobType ?? 'onsite')
-  const [status, setStatus] = useState<ApplicationStatus>(initial?.status ?? 'interested')
+  const [jobType, setJobType] = useState<JobType>(initial?.jobType ?? 'remote')
+  const [status, setStatus] = useState<ApplicationStatus>(initial?.status ?? 'applied')
   const [notes, setNotes] = useState(initial?.notes ?? '')
   const [links, setLinks] = useState<LinkDraft[]>(
     (initial?.links ?? []).map((link) => ({ ...link, id: crypto.randomUUID() })) || [
@@ -191,16 +191,6 @@ export const ApplicationForm = ({
           </label>
         </div>
 
-        <label className="field">
-          <span>Notes</span>
-          <textarea
-            name="notes"
-            rows={4}
-            value={notes}
-            onChange={(event) => setNotes(event.target.value)}
-          />
-        </label>
-
         <div className="field">
           <div className="applications-links-header">
             <span>Links</span>
@@ -235,6 +225,16 @@ export const ApplicationForm = ({
             ))}
           </div>
         </div>
+
+        <label className="field">
+          <span>Notes</span>
+          <textarea
+            name="notes"
+            rows={4}
+            value={notes}
+            onChange={(event) => setNotes(event.target.value)}
+          />
+        </label>
 
         {error && <p className="auth-error">{error}</p>}
 
