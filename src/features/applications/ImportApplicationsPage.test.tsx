@@ -54,4 +54,37 @@ describe('ImportApplicationsPage', () => {
 
     expect(await screen.findByText(/imported 1 applications/i)).toBeInTheDocument()
   })
+
+  it('handles import errors gracefully', async () => {
+    vi.spyOn(repo, 'createApplicationsBulk').mockRejectedValue(new Error('Network Error'))
+
+    render(
+      <MemoryRouter initialEntries={['/import']}>
+        <ImportApplicationsPage />
+      </MemoryRouter>,
+    )
+
+    const user = userEvent.setup()
+    await user.type(screen.getByLabelText(/paste logs/i), '### Job @ Co - 1/1/2025\n')
+    await user.click(screen.getByRole('button', { name: /preview import/i }))
+    await user.click(screen.getByRole('button', { name: /import now/i }))
+
+    expect(await screen.findByText(/network error/i)).toBeInTheDocument()
+    expect(screen.queryByText(/imported/i)).not.toBeInTheDocument()
+  })
+
+  it('updates import format correctly', async () => {
+    render(
+      <MemoryRouter initialEntries={['/import']}>
+        <ImportApplicationsPage />
+      </MemoryRouter>,
+    )
+
+    const user = userEvent.setup()
+    const formatInput = screen.getByLabelText(/format/i)
+    await user.clear(formatInput)
+    await user.type(formatInput, 'NEW_FORMAT')
+
+    expect(formatInput).toHaveValue('NEW_FORMAT')
+  })
 })

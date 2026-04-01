@@ -158,4 +158,124 @@ describe('ApplicationsPage', () => {
     expect(repo.deleteApplication).toHaveBeenCalledWith('app-1')
     expect(screen.queryByText('AlphaCorp')).not.toBeInTheDocument()
   })
+
+  it('updates an existing application through the form', async () => {
+    const existingApp: any = {
+      id: 'app-1',
+      userId: 'user-1',
+      position: 'Old Position',
+      company: 'TestCo',
+      appliedDate: new Date('2025-01-01'),
+      status: 'applied',
+      jobType: 'remote',
+      links: [],
+      location: '',
+      notes: '',
+    }
+    vi.spyOn(repo, 'listApplicationsByUser').mockResolvedValue([existingApp])
+    vi.spyOn(repo, 'updateApplication').mockResolvedValue()
+    vi.spyOn(mockUseAuth, 'useAuth').mockReturnValue({
+      user: { uid: 'user-1' } as unknown as AuthState['user'],
+      loading: false,
+      error: null,
+    })
+
+    render(
+      <MemoryRouter>
+        <ApplicationsPage />
+      </MemoryRouter>,
+    )
+
+    const row = await screen.findByRole('row', { name: /testco/i })
+    const user = userEvent.setup()
+    await user.click(within(row).getByRole('button', { name: /edit/i }))
+
+    const positionInput = screen.getByLabelText(/position/i)
+    await user.clear(positionInput)
+    await user.type(positionInput, 'New Position')
+
+    await user.click(screen.getByRole('button', { name: /save changes/i }))
+
+    expect(repo.updateApplication).toHaveBeenCalledWith(
+      'app-1',
+      expect.objectContaining({ position: 'New Position' }),
+    )
+    expect(await screen.findByText('New Position')).toBeInTheDocument()
+  })
+
+  it('updates application status inline', async () => {
+    vi.spyOn(repo, 'listApplicationsByUser').mockResolvedValue([
+      {
+        id: 'app-1',
+        userId: 'user-1',
+        position: 'Engineer',
+        company: 'AlphaCorp',
+        appliedDate: new Date('2025-01-01'),
+        status: 'interested',
+        jobType: 'remote',
+        links: [],
+        location: '',
+        notes: '',
+      },
+    ])
+    vi.spyOn(repo, 'updateApplicationStatus').mockResolvedValue()
+    vi.spyOn(mockUseAuth, 'useAuth').mockReturnValue({
+      user: { uid: 'user-1' } as unknown as AuthState['user'],
+      loading: false,
+      error: null,
+    })
+
+    render(
+      <MemoryRouter>
+        <ApplicationsPage />
+      </MemoryRouter>,
+    )
+
+    const row = await screen.findByRole('row', { name: /alphacorp/i })
+    const statusSelect = within(row).getByRole('combobox')
+
+    const user = userEvent.setup()
+    await user.selectOptions(statusSelect, 'interview')
+
+    expect(repo.updateApplicationStatus).toHaveBeenCalledWith('app-1', 'interview')
+    expect(statusSelect).toHaveValue('interview')
+  })
+
+  it('deletes all applications after confirmation', async () => {
+    vi.spyOn(repo, 'listApplicationsByUser').mockResolvedValue([
+      {
+        id: 'app-1',
+        userId: 'user-1',
+        position: 'Engineer',
+        company: 'AlphaCorp',
+        appliedDate: new Date('2025-01-01'),
+        status: 'applied',
+        jobType: 'remote',
+        links: [],
+        location: '',
+        notes: '',
+      },
+    ])
+    vi.spyOn(repo, 'deleteAllApplicationsByUser').mockResolvedValue()
+    vi.spyOn(mockUseAuth, 'useAuth').mockReturnValue({
+      user: { uid: 'user-1' } as unknown as AuthState['user'],
+      loading: false,
+      error: null,
+    })
+
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true)
+
+    render(
+      <MemoryRouter>
+        <ApplicationsPage />
+      </MemoryRouter>,
+    )
+
+    const user = userEvent.setup()
+    await user.click(await screen.findByRole('button', { name: /delete all/i }))
+
+    expect(confirmSpy).toHaveBeenCalled()
+    expect(repo.deleteAllApplicationsByUser).toHaveBeenCalledWith('user-1')
+    expect(await screen.findByText(/no applications yet/i)).toBeInTheDocument()
+  })
 })
