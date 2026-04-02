@@ -48,11 +48,11 @@ const ApplicationRow = ({
   if (!application) return null
 
   return (
-    <div className="virtual-table-row" style={style}>
-      <div className="virtual-table-cell" title={application.company}>
+    <div className="virtual-table-row" style={style} role="row">
+      <div className="virtual-table-cell" title={application.company} role="gridcell">
         {application.company}
       </div>
-      <div className="virtual-table-cell" title={application.position}>
+      <div className="virtual-table-cell" title={application.position} role="gridcell">
         {application.links && application.links.length > 0 ? (
           <a
             href={application.links[0].url}
@@ -66,9 +66,13 @@ const ApplicationRow = ({
           application.position
         )}
       </div>
-      <div className="virtual-table-cell">{application.appliedDate.toLocaleDateString()}</div>
-      <div className="virtual-table-cell">{application.jobType}</div>
-      <div className="virtual-table-cell">
+      <div className="virtual-table-cell" role="gridcell">
+        {application.appliedDate.toLocaleDateString()}
+      </div>
+      <div className="virtual-table-cell" role="gridcell">
+        {application.jobType}
+      </div>
+      <div className="virtual-table-cell" role="gridcell">
         <select
           value={application.status}
           onChange={(event) =>
@@ -87,7 +91,7 @@ const ApplicationRow = ({
           <option value="archived">archived</option>
         </select>
       </div>
-      <div className="virtual-table-cell">
+      <div className="virtual-table-cell" role="gridcell">
         <div className="applications-row-actions">
           <button
             type="button"
@@ -378,38 +382,43 @@ export const ApplicationsPage = () => {
 
       {!loading && !error && visibleApplications.length > 0 && (
         <div className="virtual-table-container">
-          <div className="virtual-table-header">
+          <div className="virtual-table-header" role="row">
             <div
               onClick={() => handleSort('company')}
               className="virtual-table-header-cell sortable-header"
+              role="columnheader"
             >
               Company {getSortIndicator('company')}
             </div>
             <div
               onClick={() => handleSort('position')}
               className="virtual-table-header-cell sortable-header"
+              role="columnheader"
             >
               Position {getSortIndicator('position')}
             </div>
             <div
               onClick={() => handleSort('appliedDate')}
               className="virtual-table-header-cell sortable-header"
+              role="columnheader"
             >
               Date {getSortIndicator('appliedDate')}
             </div>
             <div
               onClick={() => handleSort('jobType')}
               className="virtual-table-header-cell sortable-header"
+              role="columnheader"
             >
               Job type {getSortIndicator('jobType')}
             </div>
             <div
               onClick={() => handleSort('status')}
               className="virtual-table-header-cell sortable-header"
+              role="columnheader"
             >
               Status {getSortIndicator('status')}
             </div>
-            <div className="virtual-table-header-cell" />
+            <div className="virtual-table-header-cell" role="columnheader" />
           </div>
 
           <div className="virtual-list-wrapper">
@@ -418,6 +427,7 @@ export const ApplicationsPage = () => {
               rowCount={visibleApplications.length}
               rowHeight={50}
               rowComponent={ApplicationRow}
+              role="grid"
               rowProps={{
                 applications: visibleApplications,
                 statusUpdatingId,

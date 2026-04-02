@@ -9,6 +9,16 @@ import * as repo from '@/features/applications/applicationRepository'
 
 const mockUseAuth = useAuthModule as { useAuth: () => AuthState }
 
+vi.mock('react-window', () => ({
+  List: ({ rowCount, rowComponent: RowComponent, rowProps }: any) => (
+    <div role="grid">
+      {Array.from({ length: rowCount }).map((_, index) => (
+        <RowComponent key={index} index={index} style={{}} {...rowProps} />
+      ))}
+    </div>
+  ),
+}))
+
 describe('ApplicationsPage', () => {
   beforeEach(() => {
     vi.spyOn(repo, 'listApplicationsByUser').mockResolvedValue([])
