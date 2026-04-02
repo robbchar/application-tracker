@@ -1,4 +1,6 @@
+import type { ReactElement } from 'react'
 import { useEffect, useMemo, useState } from 'react'
+import { List, type RowComponentProps } from 'react-window'
 import { useAuth } from '@/features/auth/useAuth'
 import {
   createApplication,
@@ -17,6 +19,103 @@ type SortDirection = 'asc' | 'desc'
 interface SortConfig {
   key: SortKey | null
   direction: SortDirection | null
+}
+
+interface ApplicationRowData {
+  applications: Application[]
+  statusUpdatingId: string | null
+  deletingId: string | null
+  formMode: 'create' | 'edit' | null
+  activeApplicationId: string | undefined
+  onStatusChange: (id: string, status: ApplicationStatus) => void
+  onEdit: (application: Application) => void
+  onDelete: (application: Application) => void
+}
+
+const ApplicationRow = ({
+  index,
+  style,
+  applications,
+  statusUpdatingId,
+  deletingId,
+  formMode,
+  activeApplicationId,
+  onStatusChange,
+  onEdit,
+  onDelete,
+}: RowComponentProps<ApplicationRowData>): ReactElement | null => {
+  const application = applications[index]
+  if (!application) return null
+
+  return (
+    <div className="virtual-table-row" style={style} role="row">
+      <div className="virtual-table-cell" title={application.company} role="gridcell">
+        {application.company}
+      </div>
+      <div className="virtual-table-cell" title={application.position} role="gridcell">
+        {application.links && application.links.length > 0 ? (
+          <a
+            href={application.links[0].url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="job-link"
+          >
+            {application.position}
+          </a>
+        ) : (
+          application.position
+        )}
+      </div>
+      <div className="virtual-table-cell" role="gridcell">
+        {application.appliedDate.toLocaleDateString()}
+      </div>
+      <div className="virtual-table-cell" role="gridcell">
+        {application.jobType}
+      </div>
+      <div className="virtual-table-cell" role="gridcell">
+        <select
+          value={application.status}
+          onChange={(event) =>
+            onStatusChange(application.id, event.target.value as ApplicationStatus)
+          }
+          disabled={
+            statusUpdatingId === application.id ||
+            (formMode === 'edit' && activeApplicationId === application.id)
+          }
+        >
+          <option value="interested">interested</option>
+          <option value="applied">applied</option>
+          <option value="interview">interview</option>
+          <option value="offer">offer</option>
+          <option value="rejected">rejected</option>
+          <option value="archived">archived</option>
+        </select>
+      </div>
+      <div className="virtual-table-cell" role="gridcell">
+        <div className="applications-row-actions">
+          <button
+            type="button"
+            className="btn-secondary btn-small"
+            onClick={() => onEdit(application)}
+            disabled={formMode === 'edit' && activeApplicationId === application.id}
+          >
+            Edit
+          </button>
+          <button
+            type="button"
+            className="btn-secondary btn-small"
+            onClick={() => onDelete(application)}
+            disabled={
+              deletingId === application.id ||
+              (formMode === 'edit' && activeApplicationId === application.id)
+            }
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export const ApplicationsPage = () => {
@@ -282,93 +381,66 @@ export const ApplicationsPage = () => {
       )}
 
       {!loading && !error && visibleApplications.length > 0 && (
-        <table className="applications-table">
-          <thead>
-            <tr>
-              <th onClick={() => handleSort('company')} className="sortable-header">
-                Company {getSortIndicator('company')}
-              </th>
-              <th onClick={() => handleSort('position')} className="sortable-header">
-                Position {getSortIndicator('position')}
-              </th>
-              <th onClick={() => handleSort('appliedDate')} className="sortable-header">
-                Date {getSortIndicator('appliedDate')}
-              </th>
-              <th onClick={() => handleSort('jobType')} className="sortable-header">
-                Job type {getSortIndicator('jobType')}
-              </th>
-              <th onClick={() => handleSort('status')} className="sortable-header">
-                Status {getSortIndicator('status')}
-              </th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {visibleApplications.map((application) => (
-              <tr key={application.id}>
-                <td>{application.company}</td>
-                <td>
-                  {application.links && application.links.length > 0 ? (
-                    <a
-                      href={application.links[0].url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="job-link"
-                    >
-                      {application.position}
-                    </a>
-                  ) : (
-                    application.position
-                  )}
-                </td>
-                <td>{application.appliedDate.toLocaleDateString()}</td>
-                <td>{application.jobType}</td>
-                <td>
-                  <select
-                    value={application.status}
-                    onChange={(event) =>
-                      handleStatusChange(application.id, event.target.value as ApplicationStatus)
-                    }
-                    disabled={
-                      statusUpdatingId === application.id ||
-                      (formMode === 'edit' && activeApplication?.id === application.id)
-                    }
-                  >
-                    <option value="interested">interested</option>
-                    <option value="applied">applied</option>
-                    <option value="interview">interview</option>
-                    <option value="offer">offer</option>
-                    <option value="rejected">rejected</option>
-                    <option value="archived">archived</option>
-                  </select>
-                </td>
-                <td>
-                  <div className="applications-row-actions">
-                    <button
-                      type="button"
-                      className="btn-secondary btn-small"
-                      onClick={() => openEditForm(application)}
-                      disabled={formMode === 'edit' && activeApplication?.id === application.id}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      type="button"
-                      className="btn-secondary btn-small"
-                      onClick={() => requestDelete(application)}
-                      disabled={
-                        deletingId === application.id ||
-                        (formMode === 'edit' && activeApplication?.id === application.id)
-                      }
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="virtual-table-container">
+          <div className="virtual-table-header" role="row">
+            <div
+              onClick={() => handleSort('company')}
+              className="virtual-table-header-cell sortable-header"
+              role="columnheader"
+            >
+              Company {getSortIndicator('company')}
+            </div>
+            <div
+              onClick={() => handleSort('position')}
+              className="virtual-table-header-cell sortable-header"
+              role="columnheader"
+            >
+              Position {getSortIndicator('position')}
+            </div>
+            <div
+              onClick={() => handleSort('appliedDate')}
+              className="virtual-table-header-cell sortable-header"
+              role="columnheader"
+            >
+              Date {getSortIndicator('appliedDate')}
+            </div>
+            <div
+              onClick={() => handleSort('jobType')}
+              className="virtual-table-header-cell sortable-header"
+              role="columnheader"
+            >
+              Job type {getSortIndicator('jobType')}
+            </div>
+            <div
+              onClick={() => handleSort('status')}
+              className="virtual-table-header-cell sortable-header"
+              role="columnheader"
+            >
+              Status {getSortIndicator('status')}
+            </div>
+            <div className="virtual-table-header-cell" role="columnheader" />
+          </div>
+
+          <div className="virtual-list-wrapper">
+            <List<ApplicationRowData>
+              className="virtual-table-list"
+              rowCount={visibleApplications.length}
+              rowHeight={50}
+              rowComponent={ApplicationRow}
+              role="grid"
+              rowProps={{
+                applications: visibleApplications,
+                statusUpdatingId,
+                deletingId,
+                formMode,
+                activeApplicationId: activeApplication?.id,
+                onStatusChange: handleStatusChange,
+                onEdit: openEditForm,
+                onDelete: requestDelete,
+              }}
+            />
+          </div>
+        </div>
       )}
 
       {pendingDelete && (

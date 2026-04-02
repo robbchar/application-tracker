@@ -11,3 +11,13 @@ import '@testing-library/jest-dom/vitest'
   VITE_FIREBASE_MESSAGING_SENDER_ID: '000000000000',
   VITE_FIREBASE_APP_ID: '1:000000000000:web:test',
 }
+
+// Mock ResizeObserver for react-window virtualization.
+class ResizeObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+
+// @ts-ignore
+window.ResizeObserver = ResizeObserver
